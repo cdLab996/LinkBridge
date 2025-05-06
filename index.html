@@ -1,43 +1,97 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Link Bridge</title>
   <script src="libs/tailwindcss.min.js"></script>
-  <style>
-    @keyframes gradientShift {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', '"Helvetica Neue"', 'Arial', '"Noto Sans"', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"', '"Noto Color Emoji"'],
+          },
+          colors: {
+            // Example: you can define custom colors to make them easier to use in Tailwind
+            primary: '#6366f1', // indigo-500
+            secondary: '#a855f7', // purple-500
+          }
+        },
+      }
     }
+  </script>
+  <style>
+    /* Import a modern font, like Inter */
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
     .gradient-anim {
-      background: linear-gradient(45deg, #e0e7ff, #f3e8ff, #e0e7ff);
-      background-size: 200% 200%;
-      animation: gradientShift 8s ease infinite;
+      /* Adjust background gradient colors for a softer, more modern look */
+      background: linear-gradient(45deg, #eef2ff, #e0e7ff, #f3e8ff, #eef2ff);
+      /* Blend of soft blue and light purple */
+      background-size: 300% 300%;
+      /* Increase gradient size for smoother animation */
+      animation: gradientShift 12s ease infinite;
+      /* Adjust animation speed for a slower, more elegant effect */
     }
   </style>
 </head>
-<body class="flex flex-col items-center min-h-screen gradient-anim font-sans px-4">
-  <div class="w-full max-w-md bg-white/90 backdrop-blur-lg p-6 rounded-3xl shadow-2xl my-8 sm:p-8 sm:my-12 transition-all duration-300 hover:shadow-xl">
-    <h2 class="text-2xl font-bold text-gray-900 text-center mb-6 sm:text-3xl bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">Link Bridge</h2>
-    <div class="relative mb-5">
+
+<body class="flex flex-col items-center min-h-screen gradient-anim font-sans px-4 py-8">
+  <div
+    class="w-full max-w-sm md:max-w-md bg-white/95 backdrop-blur-xl p-6 rounded-3xl shadow-lg ring-1 ring-gray-900/5 my-auto sm:p-8 transition-all duration-300">
+    <h2 class="text-3xl font-extrabold text-center mb-8 sm:text-4xl"
+      style="background-image: linear-gradient(to right, #6366f1, #a855f7); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;">
+      Link Bridge
+    </h2>
+
+    <div class="relative mb-6">
+      <label for="urlInput" class="sr-only">Enter URL</label>
       <input type="text" id="urlInput"
         value="testminidrama://mainactivity?lid=mge8e5a98d&movieLangId=173596680800&m_agent_id=10004700&af_click_lookback=1d&af_c_id={campaignid}&af_adset_id={adgroupid}&af_ad_id={creative}&placement={placement}&af_sub1={gclid}&af_sub2={gbraid}&af_sub3={wbraid}"
-        class="w-full p-4 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm focus:border-indigo-500 focus:ring-2 focus:ring-indigo-300 transition-all duration-300 sm:p-5">
+        class="w-full p-4 pr-24 bg-gray-100 border-2 border-gray-200 rounded-xl text-sm text-gray-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition-all duration-300 sm:p-5 sm:pr-28"
+        placeholder="Enter your deep link URL here">
+
       <button
-        class="copy-btn absolute right-2 top-1/2 transform -translate-y-1/2 bg-indigo-100 hover:bg-indigo-200 text-indigo-700 text-xs font-medium py-2 px-4 rounded-xl transition-all duration-200 sm:px-5"
-        onclick="copyUrl()">copy</button>
+        class="copy-btn absolute right-3 top-1/2 transform -translate-y-1/2 bg-indigo-200 hover:bg-indigo-300 text-indigo-800 text-xs font-semibold py-2 px-4 rounded-lg transition-all duration-200 active:scale-95 sm:px-5"
+        onclick="copyUrl()">Copy</button>
     </div>
+
     <button onclick="redirect()"
-      class="w-full p-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-base font-semibold rounded-xl transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl active:translate-y-0 sm:p-5">Jump</button>
+      class="w-full p-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-lg font-bold rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:shadow focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 sm:p-5">
+      Jump to App
+    </button>
+
+    <p id="copyFeedback" class="text-center text-sm text-green-600 mt-4 opacity-0 transition-opacity duration-300">URL
+      copied to clipboard!</p>
+
   </div>
 
   <script>
     function redirect() {
       const url = document.getElementById('urlInput').value;
       if (url) {
-        window.location.href = url;
+        // Try using window.location.replace() to prevent returning to this page
+        window.location.replace(url);
+        // If replace is not supported, use href as a fallback
+        setTimeout(() => {
+          window.location.href = url;
+        }, 500); // Add a small delay to give replace a chance
       } else {
         alert('Please enter a valid URL');
       }
@@ -45,10 +99,51 @@
 
     function copyUrl() {
       const urlInput = document.getElementById('urlInput');
-      urlInput.select();
-      document.execCommand('copy');
-      alert('The URL has been copied to the clipboard');
+
+      // Use Clipboard API for modern browsers as it's more reliable
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(urlInput.value).then(() => {
+          showCopyFeedback();
+        }).catch(err => {
+          console.error('Failed to copy using Clipboard API:', err);
+          // Fallback for older browsers
+          fallbackCopyUrl(urlInput);
+        });
+      } else {
+        // Fallback for older browsers
+        fallbackCopyUrl(urlInput);
+      }
     }
+
+    function fallbackCopyUrl(urlInput) {
+      urlInput.select();
+      urlInput.setSelectionRange(0, 99999); // For mobile devices
+      try {
+        document.execCommand('copy');
+        showCopyFeedback();
+      } catch (err) {
+        console.error('Failed to copy using execCommand:', err);
+        alert('Failed to copy the URL. Please copy it manually.');
+      }
+    }
+
+    function showCopyFeedback() {
+      const feedbackElement = document.getElementById('copyFeedback');
+      feedbackElement.classList.remove('opacity-0');
+      feedbackElement.classList.add('opacity-100');
+      setTimeout(() => {
+        feedbackElement.classList.remove('opacity-100');
+        feedbackElement.classList.add('opacity-0');
+      }, 2000); // Hide after 2 seconds
+    }
+
+    // Optional: Select input content on page load
+    window.onload = function () {
+      const urlInput = document.getElementById('urlInput');
+      urlInput.select();
+    };
+
   </script>
 </body>
+
 </html>
